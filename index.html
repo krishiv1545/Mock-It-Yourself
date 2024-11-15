@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mock It Yourself</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        color: #333;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        width: 80%;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        text-align: center;
+        color: #007bff;
+      }
+      h2 {
+        color: #007bff;
+      }
+      input[type="number"],
+      input[type="text"],
+      input[type="password"] {
+        padding: 10px;
+        margin: 10px 0;
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      button {
+        padding: 10px 20px;
+        margin: 5px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      #score-table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+      }
+      #score-table th,
+      #score-table td {
+        padding: 10px;
+        text-align: left;
+        border: 1px solid #ddd;
+      }
+      #score-table th {
+        background-color: #007bff;
+        color: white;
+      }
+      #score-box {
+        font-size: 24px;
+        text-align: center;
+      }
+      #marks-box {
+        margin-top: 20px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Mock It Yourself</h1>
+      <p>
+        Calculate and track your JEE mock scores.
+        <br />
+        For private use only; Cannot be accessed without the passkey.
+        <br /><br />
+        If you wish to use this tool, feel free to fork the following GitHub
+        repository, and update the passkey from index.html to match your
+        convenience. You can choose to host it locally or through GitHub Pages.
+        <br /><br />
+        <a href="">GitHub repository</a>
+      </p>
+      <table id="score-table">
+        <thead>
+          <tr>
+            <th>Score</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div id="score-entry">
+        <h2>Enter New Score</h2>
+        <label for="score-input">Score:</label>
+        <input type="number" id="score-input" placeholder="Enter score" />
+        <label for="date-input">Date:</label>
+        <input type="text" id="date-input" placeholder="dd-mm-yyyy" />
+        <label for="password-input">Password:</label>
+        <input
+          type="password"
+          id="password-input"
+          placeholder="Enter password"
+        />
+        <button id="push-button">Push</button>
+      </div>
+      <button id="download-pdf">Download Table as PDF</button>
+      <div>
+        <div id="score-box">
+          <span id="score-display">0</span>
+        </div>
+        <button id="add-button">+4</button>
+        <button id="subtract-button">-1</button>
+        <button id="did-not-attempt-button">Did Not Attempt</button>
+        <button id="reset-button">Reset</button>
+      </div>
+      <p id="questions-attempted">Total questions attempted: 0</p>
+      <div id="marks-box">
+        <span id="marks-display">0 / 300</span>
+        <button id="calculate-button">Calculate</button>
+      </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script>
+      const passkey = "jee2024"; // your passkey goes here
+      function loadTableData() {
+        const storedData = JSON.parse(localStorage.getItem("scoreData")) || [];
+        const tableBody = document
+          .getElementById("score-table")
+          .getElementsByTagName("tbody")[0];
+
+        tableBody.innerHTML = "";
+
+        storedData.forEach((entry) => {
+          const newRow = tableBody.insertRow();
+          newRow.insertCell(0).textContent = entry.score;
+          newRow.insertCell(1).textContent = entry.date;
+        });
+      }
+      function saveToLocalStorage(score, date) {
+        const storedData = JSON.parse(localStorage.getItem("scoreData")) || [];
+        storedData.push({ score, date });
+        localStorage.setItem("scoreData", JSON.stringify(storedData));
+      }
+      document.addEventListener("DOMContentLoaded", () => {
+        const dateInput = document.getElementById("date-input");
+        const today = new Date();
+        const day = String(today.getDate()).padStart(2, "0");
+        const month = String(today.getMonth() + 1).padStart(2, "0");
+        const year = today.getFullYear();
+        dateInput.value = `${day}-${month}-${year}`;
+        loadTableData();
+        updateScoreDisplay();
+      });
+      document.getElementById("push-button").addEventListener("click", () => {
+        const score = document.getElementById("score-input").value;
+        const date = document.getElementById("date-input").value;
+        const password = document.getElementById("password-input").value;
+        if (password !== passkey) {
+          alert("Incorrect password. Access denied.");
+          return;
+        }
+        if (score === "") {
+          alert("Please enter a valid score.");
+          return;
+        }
+        const tableBody = document
+          .getElementById("score-table")
+          .getElementsByTagName("tbody")[0];
+        const newRow = tableBody.insertRow();
+        newRow.insertCell(0).textContent = score;
+        newRow.insertCell(1).textContent = date;
+        saveToLocalStorage(score, date);
+        document.getElementById("score-input").value = "";
+        document.getElementById("password-input").value = "";
+      });
+      document.getElementById("download-pdf").addEventListener("click", () => {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF();
+        pdf.text("Score Table", 10, 10);
+        pdf.text("Score", 10, 20);
+        pdf.text("Date", 60, 20);
+        const storedData = JSON.parse(localStorage.getItem("scoreData")) || [];
+        storedData.forEach((entry, index) => {
+          const yPosition = 30 + index * 10;
+          pdf.text(entry.score.toString(), 10, yPosition);
+          pdf.text(entry.date, 60, yPosition);
+        });
+        pdf.save("score-table.pdf");
+      });
+      const scoreDisplay = document.getElementById("score-display");
+      const questionsAttemptedDisplay = document.getElementById(
+        "questions-attempted"
+      );
+      const marksDisplay = document.getElementById("marks-display");
+      let currentScore = parseInt(localStorage.getItem("currentScore")) || 0;
+      let clickCounter = parseInt(localStorage.getItem("clickCounter")) || 0;
+      function updateScoreDisplay() {
+        scoreDisplay.textContent = currentScore;
+        localStorage.setItem("currentScore", currentScore);
+      }
+      function updateClickCounter() {
+        questionsAttemptedDisplay.textContent = `Total questions attempted: ${clickCounter}`;
+        localStorage.setItem("clickCounter", clickCounter);
+      }
+      document.getElementById("add-button").addEventListener("click", () => {
+        currentScore += 4;
+        clickCounter++;
+        updateScoreDisplay();
+        updateClickCounter();
+      });
+      document
+        .getElementById("subtract-button")
+        .addEventListener("click", () => {
+          currentScore -= 1;
+          clickCounter++;
+          updateScoreDisplay();
+          updateClickCounter();
+        });
+      document
+        .getElementById("did-not-attempt-button")
+        .addEventListener("click", () => {
+          clickCounter++;
+          updateClickCounter();
+        });
+      document.getElementById("reset-button").addEventListener("click", () => {
+        currentScore = 0;
+        clickCounter = 0;
+        updateScoreDisplay();
+        updateClickCounter();
+        marksDisplay.textContent = "0 / 300";
+      });
+      document
+        .getElementById("calculate-button")
+        .addEventListener("click", () => {
+          if (clickCounter > 0) {
+            const calculatedMarks = (300 * currentScore) / (clickCounter * 4);
+            marksDisplay.textContent = `${calculatedMarks.toFixed(2)} / 300`;
+          } else {
+            marksDisplay.textContent = "0 / 300";
+          }
+        });
+      updateScoreDisplay();
+      updateClickCounter();
+      marksDisplay.textContent = "0 / 300";
+    </script>
+  </body>
+</html>
