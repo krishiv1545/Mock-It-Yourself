@@ -1,4 +1,4 @@
-# UCEED Mock Test Tracker
+# UCEED/Ceed Score Tracker
 
 This project is a fork of [Mock-It-Yourself repository](https://github.com/krishiv1545/Mock-It-Yourself/) to help UCEED (Undergraduate Common Entrance Examination for Design) aspirants track their mock test scores and performance. It offers an easy-to-use web-based tool to track the scores from different sections like **NAT**, **MSQ**, and **MCQ**, based on the user's input for correct, incorrect, and unanswered questions.
 
