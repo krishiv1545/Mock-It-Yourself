@@ -30,7 +30,8 @@
       }
       input[type="number"],
       input[type="text"],
-      input[type="password"] {
+      input[type="password"],
+      select {
         padding: 10px;
         margin: 10px 0;
         width: 100%;
@@ -74,7 +75,43 @@
         margin-top: 20px;
         text-align: center;
       }
+      .dynamic-div-container {
+        position: relative;
+        width: 100%;
+      }
+      .dynamic-div {
+        position: absolute;
+        width: 100%;
+        height: 15px;
+        background-image: linear-gradient(
+          to right,
+          rgb(255, 0, 0, 0.2),
+          rgb(255, 0, 0, 0.6),
+          red
+        );
+        border-radius: 10px;
+      }
+      .dynamic-div-overlay {
+        position: absolute;
+        height: 15px;
+        width: 100%;
+        background-image: rgba(0, 0, 0, 0);
+        border: 2px solid black;
+        border-radius: 10px;
+        z-index: 1;
+        top: -1px;
+        left: -2px;
+      }
+      #set-timer {
+        margin-top: 34px;
+      }
+      #timer-display {
+        font-size: 24px;
+        text-align: center;
+        padding-bottom: 10px;
+      }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
     <div class="container">
@@ -82,52 +119,186 @@
       <p>
         Calculate and track your JEE mock scores.
         <br />
-        If you wish to use this tool locally, feel free to fork the following GitHub
+        If you wish to use this tool locally, feel free to fork the following
+        GitHub
         <br />
-        <a href="https://github.com/krishiv1545/Mock-It-Yourself">GitHub repository</a>
+        <a href="https://github.com/krishiv1545/Mock-It-Yourself"
+          >GitHub repository</a
+        >
       </p>
       <table id="score-table">
         <thead>
           <tr>
             <th>Score</th>
             <th>Date</th>
+            <th>Subject</th>
           </tr>
         </thead>
         <tbody></tbody>
       </table>
-      <div id="score-entry">
-        <h2>Enter New Score</h2>
-        <label for="score-input">Score:</label>
-        <input type="number" id="score-input" placeholder="Enter score" />
-        <label for="date-input">Date:</label>
-        <input type="text" id="date-input" placeholder="dd-mm-yyyy" />
-        <!-- <label for="password-input">Password:</label>
+      <div class="chart-container"">
+      <h2>Your Academic Trend</h2>
+      <div
+        style="
+          overflow-y: auto;
+          width: 100%;
+          display: flex;
+          justify-content: center;
+        "
+      >
+        <canvas id="myChart"></canvas>
+      </div>
+    </div>
+    <div id="score-entry">
+      <h2>Enter New Score</h2>
+      <label for="score-input">Score:</label>
+      <input type="number" id="score-input" placeholder="Enter score" />
+      <label for="date-input">Date:</label>
+      <input type="text" id="date-input" placeholder="dd-mm-yyyy" />
+      <!-- <label for="password-input">Password:</label>
         <input
           type="password"
           id="password-input"
           placeholder="Enter password"
         /> -->
-        <button id="push-button">Push</button>
-      </div>
-      <button id="download-pdf">Download Table as PDF</button>
-      <div>
-        <div id="score-box">
-          <span id="score-display">0</span>
-        </div>
-        <button id="add-button">+4</button>
-        <button id="subtract-button">-1</button>
-        <button id="did-not-attempt-button">Did Not Attempt</button>
-        <button id="reset-button">Reset</button>
-      </div>
-      <p id="questions-attempted">Total questions attempted: 0</p>
-      <div id="marks-box">
-        <span id="marks-display">0 / 300</span>
-        <button id="calculate-button">Calculate</button>
-      </div>
+      <label for="subject-input">Subject:</label>
+      <select name="subject-input" id="subject-input">
+        <option value="Maths">Mathematics</option>
+        <option value="Physics">Physics</option>
+        <option value="Chemistry">Chemistry</option></select
+      ><br />
+      <button id="push-button">Push</button>
     </div>
+    <button id="download-pdf">Download Table as PDF</button>
+    <div>
+      <div id="score-box">
+        <span id="score-display">0</span>
+      </div>
+      <button id="add-button">+4</button>
+      <button id="subtract-button">-1</button>
+      <button id="did-not-attempt-button">Did Not Attempt</button>
+      <button id="reset-button">Reset</button>
+    </div>
+    <p id="questions-attempted">Total questions attempted: 0</p>
+    <div id="marks-box">
+      <span id="marks-display">0 / 300</span>
+      <button id="calculate-button">Calculate</button>
+    </div>
+    <div class="clock">
+      <div id="timer">
+        <h2>Timer</h2>
+        <div id="timer-display">00:00</div>
+        <div class="dynamic-div-container">
+          <div id="dynamic-div" class="dynamic-div"></div>
+          <div class="dynamic-div-overlay" id="dynamic-div-overlay"></div>
+        </div>
+        <input type="number" id="set-timer" placeholder="Enter minutes" />
+        <button id="start-timer">Start Timer</button>
+        <button id="pause-timer">Pause Timer</button>
+        <button id="reset-timer">Reset Timer</button>
+      </div>
+      <!-- <div id="stopwatch">
+          <h2>Stopwatch</h2>
+          <div id="stopwatch-display">00:00</div>
+          <button id="start-stopwatch">Start Stopwatch</button>
+          <button id="pause-stopwatch">Pause Stopwatch</button>
+          <button id="reset-stopwatch">Reset Stopwatch</button>
+        </div>
+      </div> -->
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      function getScoresAndDates() {
+        const storedData = JSON.parse(localStorage.getItem("scoreData")) || [];
+        const math_scores = storedData
+          .filter((item) => item.subject === "Maths")
+          .map((item) => item.score);
+        const math_dates = storedData
+          .filter((item) => item.subject === "Maths")
+          .map((item) => item.date);
+        const phy_scores = storedData
+          .filter((item) => item.subject === "Physics")
+          .map((item) => item.score);
+        const phy_dates = storedData
+          .filter((item) => item.subject === "Physics")
+          .map((item) => item.date);
+        const chem_scores = storedData
+          .filter((item) => item.subject === "Chemistry")
+          .map((item) => item.score);
+        const chem_dates = storedData
+          .filter((item) => item.subject === "Chemistry")
+          .map((item) => item.date);
+        return {
+          math_scores,
+          math_dates,
+          phy_scores,
+          phy_dates,
+          chem_scores,
+          chem_dates,
+        };
+      }
+      const {
+        math_scores,
+        math_dates,
+        phy_scores,
+        phy_dates,
+        chem_scores,
+        chem_dates,
+      } = getScoresAndDates();
+
+      const combined_data = {
+        labels: [...math_dates, ...phy_dates, ...chem_dates],
+        datasets: [
+          {
+            label: "Math Scores",
+            data: math_scores,
+            borderColor: "rgb(255, 0, 0)",
+            fill: false,
+            spanGaps: true,
+          },
+          {
+            label: "Physics Scores",
+            data: phy_scores,
+            borderColor: "rgb(0, 255, 0)",
+            fill: false,
+            spanGaps: true,
+          },
+          {
+            label: "Chemistry Scores",
+            data: chem_scores,
+            borderColor: "rgb(0, 0, 255)",
+            fill: false,
+            spanGaps: true,
+          },
+        ],
+      };
+      const config = {
+        type: "line",
+        data: combined_data,
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: true },
+            title: { display: true, text: "Scores Over Time" },
+          },
+          scales: {
+            x: {
+              type: "category",
+              title: { display: true, text: "Dates" },
+            },
+            y: {
+              beginAtZero: true,
+              min: 0,
+              max: 300,
+              title: { display: true, text: "Scores" },
+            },
+          },
+        },
+      };
+      const myChart = new Chart(document.getElementById("myChart"), config);
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script>
-      const passkey = "jee2024"; // your passkey goes here
       function loadTableData() {
         const storedData = JSON.parse(localStorage.getItem("scoreData")) || [];
         const tableBody = document
@@ -140,11 +311,12 @@
           const newRow = tableBody.insertRow();
           newRow.insertCell(0).textContent = entry.score;
           newRow.insertCell(1).textContent = entry.date;
+          newRow.insertCell(2).textContent = entry.subject;
         });
       }
-      function saveToLocalStorage(score, date) {
+      function saveToLocalStorage(score, date, subject) {
         const storedData = JSON.parse(localStorage.getItem("scoreData")) || [];
-        storedData.push({ score, date });
+        storedData.push({ score, date, subject });
         localStorage.setItem("scoreData", JSON.stringify(storedData));
       }
       document.addEventListener("DOMContentLoaded", () => {
@@ -160,6 +332,7 @@
       document.getElementById("push-button").addEventListener("click", () => {
         const score = document.getElementById("score-input").value;
         const date = document.getElementById("date-input").value;
+        const subject = document.getElementById("subject-input").value;
         /* const password = document.getElementById("password-input").value;
         if (password !== passkey) {
           alert("Incorrect password. Access denied.");
@@ -175,7 +348,8 @@
         const newRow = tableBody.insertRow();
         newRow.insertCell(0).textContent = score;
         newRow.insertCell(1).textContent = date;
-        saveToLocalStorage(score, date);
+        newRow.insertCell(2).textContent = subject;
+        saveToLocalStorage(score, date, subject);
         document.getElementById("score-input").value = "";
         /* document.getElementById("password-input").value = ""; */
       });
@@ -185,11 +359,13 @@
         pdf.text("Score Table", 10, 10);
         pdf.text("Score", 10, 20);
         pdf.text("Date", 60, 20);
+        /* missing here */
         const storedData = JSON.parse(localStorage.getItem("scoreData")) || [];
         storedData.forEach((entry, index) => {
           const yPosition = 30 + index * 10;
           pdf.text(entry.score.toString(), 10, yPosition);
           pdf.text(entry.date, 60, yPosition);
+          pdf.text(entry.subject, 110, yPosition);
         });
         pdf.save("score-table.pdf");
       });
@@ -248,6 +424,83 @@
       updateScoreDisplay();
       updateClickCounter();
       marksDisplay.textContent = "0 / 300";
+      console.log(storedData);
+    </script>
+    <script>
+      let timerInterval;
+      let remainingTime = 0;
+      let isPaused = false;
+      let totalTime = 0;
+      const timerDisplay = document.getElementById("timer-display");
+      const setTimerInput = document.getElementById("set-timer");
+      const startButton = document.getElementById("start-timer");
+      const pauseButton = document.getElementById("pause-timer");
+      const resetButton = document.getElementById("reset-timer");
+      const dynamicDiv = document.getElementById("dynamic-div");
+      function updateTimerDisplay() {
+        const minutes = Math.floor(remainingTime / 60);
+        const seconds = remainingTime % 60;
+        timerDisplay.textContent = `${String(minutes).padStart(
+          2,
+          "0"
+        )}:${String(seconds).padStart(2, "0")}`;
+      }
+      function updateDivWidth() {
+        const widthPercentage = (remainingTime / totalTime) * 100;
+        dynamicDiv.style.width = `${widthPercentage}%`;
+      }
+      startButton.addEventListener("click", () => {
+        if (!isPaused) {
+          const enteredMinutes = parseInt(setTimerInput.value) || 0;
+          remainingTime = enteredMinutes * 60;
+          totalTime = remainingTime;
+          updateTimerDisplay();
+        }
+        isPaused = false;
+        clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+          if (remainingTime > 0) {
+            remainingTime--;
+            updateDivWidth();
+            updateTimerDisplay();
+          } else {
+            clearInterval(timerInterval);
+            alert("Time's up!");
+          }
+        }, 1000);
+      });
+      pauseButton.addEventListener("click", () => {
+        if (isPaused) {
+          isPaused = false;
+          pauseButton.textContent = "Pause Timer";
+          timerInterval = setInterval(() => {
+            if (remainingTime > 0) {
+              remainingTime--;
+              updateDivWidth();
+              updateTimerDisplay();
+            } else {
+              clearInterval(timerInterval);
+              alert("Time's up!");
+            }
+          }, 1000);
+        } else {
+          isPaused = true;
+          clearInterval(timerInterval);
+          pauseButton.textContent = "Continue Timer";
+        }
+      });
+      resetButton.addEventListener("click", () => {
+        clearInterval(timerInterval);
+        remainingTime = 0;
+        totalTime = 0;
+        isPaused = false;
+        pauseButton.textContent = "Pause Timer";
+        dynamicDiv.style.width = "100%";
+        updateTimerDisplay();
+        setTimerInput.value = "";
+      });
+      updateTimerDisplay();
+      updateDivWidth();
     </script>
   </body>
 </html>
