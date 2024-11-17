@@ -82,12 +82,8 @@
       <p>
         Calculate and track your JEE mock scores.
         <br />
-        For private use only; Cannot be accessed without the passkey.
-        <br /><br />
-        If you wish to use this tool, feel free to fork the following GitHub
-        repository, and update the passkey from index.html to match your
-        convenience. You can choose to host it locally or through GitHub Pages.
-        <br /><br />
+        If you wish to use this tool locally, feel free to fork the following GitHub
+        <br />
         <a href="https://github.com/krishiv1545/Mock-It-Yourself">GitHub repository</a>
       </p>
       <table id="score-table">
@@ -105,12 +101,12 @@
         <input type="number" id="score-input" placeholder="Enter score" />
         <label for="date-input">Date:</label>
         <input type="text" id="date-input" placeholder="dd-mm-yyyy" />
-        <label for="password-input">Password:</label>
+        <!-- <label for="password-input">Password:</label>
         <input
           type="password"
           id="password-input"
           placeholder="Enter password"
-        />
+        /> -->
         <button id="push-button">Push</button>
       </div>
       <button id="download-pdf">Download Table as PDF</button>
@@ -164,11 +160,11 @@
       document.getElementById("push-button").addEventListener("click", () => {
         const score = document.getElementById("score-input").value;
         const date = document.getElementById("date-input").value;
-        const password = document.getElementById("password-input").value;
+        /* const password = document.getElementById("password-input").value;
         if (password !== passkey) {
           alert("Incorrect password. Access denied.");
           return;
-        }
+        } */
         if (score === "") {
           alert("Please enter a valid score.");
           return;
@@ -181,7 +177,7 @@
         newRow.insertCell(1).textContent = date;
         saveToLocalStorage(score, date);
         document.getElementById("score-input").value = "";
-        document.getElementById("password-input").value = "";
+        /* document.getElementById("password-input").value = ""; */
       });
       document.getElementById("download-pdf").addEventListener("click", () => {
         const { jsPDF } = window.jspdf;
