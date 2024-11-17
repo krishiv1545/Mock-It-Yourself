@@ -3,8 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mock It Yourself</title>
-    <link rel="stylesheet" href="style.css" />
+    <title>UCEED/CEED Mock Test Tracker</title>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -14,7 +13,7 @@
         padding: 0;
       }
       .container {
-        width: 80%;
+        width: 90%;
         margin: 50px auto;
         padding: 20px;
         background-color: #fff;
@@ -27,16 +26,6 @@
       }
       h2 {
         color: #007bff;
-      }
-      input[type="number"],
-      input[type="text"],
-      input[type="password"] {
-        padding: 10px;
-        margin: 10px 0;
-        width: 100%;
-        box-sizing: border-box;
-        border: 1px solid #ccc;
-        border-radius: 5px;
       }
       button {
         padding: 10px 20px;
@@ -51,6 +40,25 @@
       button:hover {
         background-color: #0056b3;
       }
+      .section-container {
+        margin-top: 20px;
+      }
+      .input-container {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+      }
+      .input-container label {
+        width: 40%;
+        font-weight: bold;
+      }
+      .input-container input {
+        width: 50%;
+        padding: 8px;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
       #score-table {
         width: 100%;
         margin-top: 20px;
@@ -58,196 +66,182 @@
       }
       #score-table th,
       #score-table td {
-        padding: 10px;
-        text-align: left;
+        padding: 5px;
+        text-align: center;
         border: 1px solid #ddd;
       }
       #score-table th {
         background-color: #007bff;
         color: white;
       }
-      #score-box {
-        font-size: 24px;
-        text-align: center;
-      }
-      #marks-box {
-        margin-top: 20px;
-        text-align: center;
-      }
     </style>
   </head>
   <body>
     <div class="container">
-      <h1>Mock It Yourself</h1>
-      <p>
-        Calculate and track your JEE mock scores.
-        <br />
-        If you wish to use this tool locally, feel free to fork the following GitHub
-        <br />
-        <a href="https://github.com/krishiv1545/Mock-It-Yourself">GitHub repository</a>
-      </p>
-      <table id="score-table">
-        <thead>
-          <tr>
-            <th>Score</th>
-            <th>Date</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-      <div id="score-entry">
-        <h2>Enter New Score</h2>
-        <label for="score-input">Score:</label>
-        <input type="number" id="score-input" placeholder="Enter score" />
-        <label for="date-input">Date:</label>
-        <input type="text" id="date-input" placeholder="dd-mm-yyyy" />
-        <!-- <label for="password-input">Password:</label>
-        <input
-          type="password"
-          id="password-input"
-          placeholder="Enter password"
-        /> -->
-        <button id="push-button">Push</button>
-      </div>
-      <button id="download-pdf">Download Table as PDF</button>
-      <div>
-        <div id="score-box">
-          <span id="score-display">0</span>
+      <h1>UCEED/CEED Test Score Tracker</h1>
+
+      <!-- Scoring Configuration -->
+      <div class="section-container">
+        <h2>Marking Scheme</h2>
+
+        <!-- NAT Section -->
+        <div class="input-container">
+          <label for="nat-correct">NAT Correct Marks:</label>
+          <input type="number" id="nat-correct" value="3" />
         </div>
-        <button id="add-button">+4</button>
-        <button id="subtract-button">-1</button>
-        <button id="did-not-attempt-button">Did Not Attempt</button>
-        <button id="reset-button">Reset</button>
+        <div class="input-container">
+          <label for="nat-incorrect">NAT Incorrect Marks:</label>
+          <input type="number" id="nat-incorrect" value="0" />
+        </div>
+        <!-- MCQ Section -->
+        <div class="input-container">
+          <label for="mcq-correct">MCQ Correct Marks:</label>
+          <input type="number" id="mcq-correct" value="3" />
+        </div>
+        <div class="input-container">
+          <label for="mcq-incorrect">MCQ Incorrect Marks:</label>
+          <input type="number" id="mcq-incorrect" value="-1" />
+        </div>
+        <!-- warm -->
+        <div class="input-container">
+          <label for="msq-warn">MSQ now has partial marking, choose below acc to marking scheme</label>
+        </div>
       </div>
-      <p id="questions-attempted">Total questions attempted: 0</p>
-      <div id="marks-box">
-        <span id="marks-display">0 / 300</span>
-        <button id="calculate-button">Calculate</button>
+
+      <!-- Buttons for NAT -->
+      <div class="section-container">
+        <h2>NAT</h2>
+        <button onclick="updateScore('NAT', 'correct')">Correct</button>
+        <button onclick="updateScore('NAT', 'incorrect')">Incorrect</button>
+        <button onclick="updateScore('NAT', 'did-not-attempt')">Did Not Attempt</button>
       </div>
+
+      <!-- Buttons for MSQ -->
+      <div class="section-container">
+        <h2>MSQ</h2>
+        <button onclick="updateMSQScore(4)">+4</button>
+        <button onclick="updateMSQScore(3)">+3</button>
+        <button onclick="updateMSQScore(2)">+2</button>
+        <button onclick="updateMSQScore(1)">+1</button>
+        <button onclick="updateMSQScore(0)">+0</button>
+        <button onclick="updateMSQScore(-1)">-1</button>
+        <button onclick="updateMSQScore(-2)">-2</button>
+      </div>
+
+      <!-- Buttons for MCQ -->
+      <div class="section-container">
+        <h2>MCQ</h2>
+        <button onclick="updateScore('MCQ', 'correct')">Correct</button>
+        <button onclick="updateScore('MCQ', 'incorrect')">Incorrect</button>
+        <button onclick="updateScore('MCQ', 'did-not-attempt')">Did Not Attempt</button>
+      </div>
+
+      <!-- Total Score Display -->
+      <div id="score-box" class="section-container">
+        <h2>Total Score: <span id="total-score">0</span></h2>
+      </div>
+
+      <!-- Previous Scores Table -->
+      <div>
+        <table id="score-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Section</th>
+              <th>Correct</th>
+              <th>Incorrect</th>
+              <th>Left</th>
+              <th>Accuracy (%)</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <button id="save-score">Save Scores</button>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
     <script>
-      const passkey = "jee2024"; // your passkey goes here
-      function loadTableData() {
-        const storedData = JSON.parse(localStorage.getItem("scoreData")) || [];
-        const tableBody = document
-          .getElementById("score-table")
-          .getElementsByTagName("tbody")[0];
+      const scores = {
+        NAT: { correct: 0, incorrect: 0, left: 0, total: 0, accuracy: 0 },
+        MSQ: { correct: 0, incorrect: 0, left: 0, total: 0, accuracy: 0 },
+        MCQ: { correct: 0, incorrect: 0, left: 0, total: 0, accuracy: 0 },
+      };
 
-        tableBody.innerHTML = "";
+      function updateScore(section, type) {
+        const correctMarks = parseFloat(
+          document.getElementById(`${section.toLowerCase()}-correct`).value
+        );
+        const incorrectMarks = parseFloat(
+          document.getElementById(`${section.toLowerCase()}-incorrect`).value
+        );
 
-        storedData.forEach((entry) => {
-          const newRow = tableBody.insertRow();
-          newRow.insertCell(0).textContent = entry.score;
-          newRow.insertCell(1).textContent = entry.date;
-        });
-      }
-      function saveToLocalStorage(score, date) {
-        const storedData = JSON.parse(localStorage.getItem("scoreData")) || [];
-        storedData.push({ score, date });
-        localStorage.setItem("scoreData", JSON.stringify(storedData));
-      }
-      document.addEventListener("DOMContentLoaded", () => {
-        const dateInput = document.getElementById("date-input");
-        const today = new Date();
-        const day = String(today.getDate()).padStart(2, "0");
-        const month = String(today.getMonth() + 1).padStart(2, "0");
-        const year = today.getFullYear();
-        dateInput.value = `${day}-${month}-${year}`;
-        loadTableData();
-        updateScoreDisplay();
-      });
-      document.getElementById("push-button").addEventListener("click", () => {
-        const score = document.getElementById("score-input").value;
-        const date = document.getElementById("date-input").value;
-        /* const password = document.getElementById("password-input").value;
-        if (password !== passkey) {
-          alert("Incorrect password. Access denied.");
-          return;
-        } */
-        if (score === "") {
-          alert("Please enter a valid score.");
-          return;
+        if (type === "correct") {
+          scores[section].correct++;
+          scores[section].total += correctMarks;
+        } else if (type === "incorrect") {
+          scores[section].incorrect++;
+          scores[section].total += incorrectMarks;
+        } else if (type === "did-not-attempt") {
+          scores[section].left++;
         }
-        const tableBody = document
-          .getElementById("score-table")
-          .getElementsByTagName("tbody")[0];
-        const newRow = tableBody.insertRow();
-        newRow.insertCell(0).textContent = score;
-        newRow.insertCell(1).textContent = date;
-        saveToLocalStorage(score, date);
-        document.getElementById("score-input").value = "";
-        /* document.getElementById("password-input").value = ""; */
-      });
-      document.getElementById("download-pdf").addEventListener("click", () => {
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF();
-        pdf.text("Score Table", 10, 10);
-        pdf.text("Score", 10, 20);
-        pdf.text("Date", 60, 20);
-        const storedData = JSON.parse(localStorage.getItem("scoreData")) || [];
-        storedData.forEach((entry, index) => {
-          const yPosition = 30 + index * 10;
-          pdf.text(entry.score.toString(), 10, yPosition);
-          pdf.text(entry.date, 60, yPosition);
-        });
-        pdf.save("score-table.pdf");
-      });
-      const scoreDisplay = document.getElementById("score-display");
-      const questionsAttemptedDisplay = document.getElementById(
-        "questions-attempted"
-      );
-      const marksDisplay = document.getElementById("marks-display");
-      let currentScore = parseInt(localStorage.getItem("currentScore")) || 0;
-      let clickCounter = parseInt(localStorage.getItem("clickCounter")) || 0;
-      function updateScoreDisplay() {
-        scoreDisplay.textContent = currentScore;
-        localStorage.setItem("currentScore", currentScore);
+
+        scores[section].accuracy = calculateAccuracy(
+          scores[section].correct,
+          scores[section].incorrect,
+          scores[section].left
+        );
+        updateTotalScore();
       }
-      function updateClickCounter() {
-        questionsAttemptedDisplay.textContent = `Total questions attempted: ${clickCounter}`;
-        localStorage.setItem("clickCounter", clickCounter);
+
+      function updateMSQScore(points) {
+        if (points > 0) {
+          scores.MSQ.correct++;
+        } else if (points === 0) {
+          scores.MSQ.left++;
+        } else {
+          scores.MSQ.incorrect++;
+        }
+        scores.MSQ.total += points;
+        scores.MSQ.accuracy = calculateAccuracy(
+          scores.MSQ.correct,
+          scores.MSQ.incorrect,
+          scores.MSQ.left
+        );
+        updateTotalScore();
       }
-      document.getElementById("add-button").addEventListener("click", () => {
-        currentScore += 4;
-        clickCounter++;
-        updateScoreDisplay();
-        updateClickCounter();
+
+      function calculateAccuracy(correct, incorrect, left) {
+        const totalQuestions = correct + incorrect + left;
+        return totalQuestions > 0
+          ? ((correct / totalQuestions) * 100).toFixed(2)
+          : "0.00";
+      }
+
+      function updateTotalScore() {
+        const totalScore =
+          scores.NAT.total + scores.MSQ.total + scores.MCQ.total;
+        document.getElementById("total-score").textContent = totalScore;
+      }
+
+      document.getElementById("save-score").addEventListener("click", () => {
+        const date = new Date().toLocaleDateString();
+        const tableBody = document.querySelector("#score-table tbody");
+
+        Object.keys(scores).forEach((section) => {
+          const row = tableBody.insertRow();
+          row.innerHTML = `
+            <td>${date}</td>
+            <td>${section}</td>
+            <td>${scores[section].correct}</td>
+            <td>${scores[section].incorrect}</td>
+            <td>${scores[section].left}</td>
+            <td>${scores[section].accuracy}</td>
+            <td>${scores[section].total}</td>
+          `;
+        });
       });
-      document
-        .getElementById("subtract-button")
-        .addEventListener("click", () => {
-          currentScore -= 1;
-          clickCounter++;
-          updateScoreDisplay();
-          updateClickCounter();
-        });
-      document
-        .getElementById("did-not-attempt-button")
-        .addEventListener("click", () => {
-          clickCounter++;
-          updateClickCounter();
-        });
-      document.getElementById("reset-button").addEventListener("click", () => {
-        currentScore = 0;
-        clickCounter = 0;
-        updateScoreDisplay();
-        updateClickCounter();
-        marksDisplay.textContent = "0 / 300";
-      });
-      document
-        .getElementById("calculate-button")
-        .addEventListener("click", () => {
-          if (clickCounter > 0) {
-            const calculatedMarks = (300 * currentScore) / (clickCounter * 4);
-            marksDisplay.textContent = `${calculatedMarks.toFixed(2)} / 300`;
-          } else {
-            marksDisplay.textContent = "0 / 300";
-          }
-        });
-      updateScoreDisplay();
-      updateClickCounter();
-      marksDisplay.textContent = "0 / 300";
     </script>
   </body>
 </html>
