@@ -1,6 +1,6 @@
 # UCEED Mock Test Tracker
 
-This project is designed to help UCEED (Undergraduate Common Entrance Examination for Design) aspirants track their mock test scores and performance. It offers an easy-to-use web-based tool to track the scores from different sections like **NAT**, **MSQ**, and **MCQ**, based on the user's input for correct, incorrect, and unanswered questions.
+This project is a fork of [Mock-It-Yourself repository](https://github.com/krishiv1545/Mock-It-Yourself/) to help UCEED (Undergraduate Common Entrance Examination for Design) aspirants track their mock test scores and performance. It offers an easy-to-use web-based tool to track the scores from different sections like **NAT**, **MSQ**, and **MCQ**, based on the user's input for correct, incorrect, and unanswered questions.
 
 The tool allows you to:
 - Input your scores for each section.
@@ -9,21 +9,15 @@ The tool allows you to:
 
 ---
 
-### Key Features:
-- **Track Scores**: Record scores for each section of the UCEED/CEED mock test.
-- **Dynamic Scoring**: Supports customizable scores for correct, incorrect, and unanswered questions for each section.
-- **Accuracy Calculation**: Automatically calculates the accuracy based on your correct and incorrect attempts.
-- **Responsive Design**: Works seamlessly on both desktop and mobile devices.
-
----
-
 ### How to Use:
 
 1. **Input the Scoring Rules**:
-   - Set the marks for correct and incorrect answers for each section (NAT, MSQ, MCQ).
+   - Set the marks for correct and incorrect answers for each section (NAT, MCQ).
+   - MSQ has partial marking as of recent years so choose marks as applicable.
+   - Accuracy is calculated based on correct attempted questions (ie +1 in msq and +4 in msq have same impact on accuracy)
 
 2. **Track Your Progress**:
-   - For each section (NAT, MSQ, MCQ), use the buttons to mark questions as correct, incorrect, or not attempted.
+   - For each section (NAT, MCQ), use the buttons to mark questions as correct, incorrect, or not attempted.
    - The tool will update your scores and accuracy in real-time.
 
 3. **Save and View Scores**:
