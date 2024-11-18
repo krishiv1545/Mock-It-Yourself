@@ -215,19 +215,19 @@
           .map((item) => item.score);
         const math_dates = storedData
           .filter((item) => item.subject === "Maths")
-          .map((item) => item.date);
+          .map((item) => formatDate(item.date)); // <--- Update here
         const phy_scores = storedData
           .filter((item) => item.subject === "Physics")
           .map((item) => item.score);
         const phy_dates = storedData
           .filter((item) => item.subject === "Physics")
-          .map((item) => item.date);
+          .map((item) => formatDate(item.date)); // <--- Update here
         const chem_scores = storedData
           .filter((item) => item.subject === "Chemistry")
           .map((item) => item.score);
         const chem_dates = storedData
           .filter((item) => item.subject === "Chemistry")
-          .map((item) => item.date);
+          .map((item) => formatDate(item.date)); // <--- Update here
         return {
           math_scores,
           math_dates,
@@ -236,6 +236,12 @@
           chem_scores,
           chem_dates,
         };
+      }
+
+      // Add a new function to format dates
+      function formatDate(dateString) {
+        const dateParts = dateString.split("-");
+        return `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
       }
       const {
         math_scores,
@@ -310,7 +316,7 @@
         storedData.forEach((entry) => {
           const newRow = tableBody.insertRow();
           newRow.insertCell(0).textContent = entry.score;
-          newRow.insertCell(1).textContent = entry.date;
+          newRow.insertCell(1).textContent = formatDate(entry.date); // <--- Update here
           newRow.insertCell(2).textContent = entry.subject;
         });
       }
@@ -333,6 +339,10 @@
         const score = document.getElementById("score-input").value;
         const date = document.getElementById("date-input").value;
         const subject = document.getElementById("subject-input").value;
+
+        // Format date before saving to local storage
+        const formattedDate = formatDate(date);
+
         /* const password = document.getElementById("password-input").value;
         if (password !== passkey) {
           alert("Incorrect password. Access denied.");
@@ -349,7 +359,7 @@
         newRow.insertCell(0).textContent = score;
         newRow.insertCell(1).textContent = date;
         newRow.insertCell(2).textContent = subject;
-        saveToLocalStorage(score, date, subject);
+        saveToLocalStorage(score, formattedDate, subject);
         document.getElementById("score-input").value = "";
         /* document.getElementById("password-input").value = ""; */
       });
