@@ -29,7 +29,7 @@
         color: #007bff;
       }
       input[type="number"],
-      input[type="text"],
+      input[type="date"],
       input[type="password"],
       select {
         padding: 10px;
@@ -154,7 +154,7 @@
       <label for="score-input">Score:</label>
       <input type="number" id="score-input" placeholder="Enter score" />
       <label for="date-input">Date:</label>
-      <input type="text" id="date-input" placeholder="dd-mm-yyyy" />
+      <input type="date" id="date-input" placeholder="dd-mm-yyyy" />
       <!-- <label for="password-input">Password:</label>
         <input
           type="password"
@@ -325,7 +325,7 @@
         const day = String(today.getDate()).padStart(2, "0");
         const month = String(today.getMonth() + 1).padStart(2, "0");
         const year = today.getFullYear();
-        dateInput.value = `${day}-${month}-${year}`;
+        dateInput.value = `${year}-${month}-${day}`;
         loadTableData();
         updateScoreDisplay();
       });
