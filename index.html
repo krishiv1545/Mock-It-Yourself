@@ -110,6 +110,22 @@
         text-align: center;
         padding-bottom: 10px;
       }
+      .chart-container {
+        width: 100%;
+        display: block;
+        justify-content: center;
+      }
+
+      .myChart {
+        width: 100%;
+        height: 400px; /* Default height */
+      }
+
+      @media (max-width: 480px) {
+        .myChart {
+          height: 350px;
+        }
+      }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
@@ -139,6 +155,7 @@
       <div class="chart-container"">
       <h2>Your Academic Trend</h2>
       <div
+        class="myChart"
         style="
           overflow-y: auto;
           width: 100%;
@@ -283,6 +300,7 @@
         data: combined_data,
         options: {
           responsive: true,
+          maintainAspectRatio: false, // This allows the chart to resize with its container
           plugins: {
             legend: { display: true },
             title: { display: true, text: "Scores Over Time" },
@@ -301,7 +319,13 @@
           },
         },
       };
+
       const myChart = new Chart(document.getElementById("myChart"), config);
+
+      // Optional: Re-render chart on window resize (if needed)
+      window.addEventListener("resize", () => {
+        myChart.resize();
+      });
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script>
