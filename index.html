@@ -316,7 +316,7 @@
         storedData.forEach((entry) => {
           const newRow = tableBody.insertRow();
           newRow.insertCell(0).textContent = entry.score;
-          newRow.insertCell(1).textContent = formatDate(entry.date); // <--- Update here
+          newRow.insertCell(1).textContent = entry.date; // <--- Update here
           newRow.insertCell(2).textContent = entry.subject;
         });
       }
@@ -357,7 +357,7 @@
           .getElementsByTagName("tbody")[0];
         const newRow = tableBody.insertRow();
         newRow.insertCell(0).textContent = score;
-        newRow.insertCell(1).textContent = date;
+        newRow.insertCell(1).textContent = formatDate(date);
         newRow.insertCell(2).textContent = subject;
         saveToLocalStorage(score, formattedDate, subject);
         document.getElementById("score-input").value = "";
