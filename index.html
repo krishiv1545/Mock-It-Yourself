@@ -21,6 +21,16 @@
         border-radius: 10px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
       }
+      .container p {
+        color: #333;
+        font-size: 1rem;
+        display: flex;
+        justify-content: center;
+      }
+      .container a {
+        text-decoration: none;
+        margin-left: 4px;
+      }
       h1 {
         text-align: center;
         color: #007bff;
@@ -85,9 +95,9 @@
         height: 15px;
         background-image: linear-gradient(
           to right,
-          rgb(255, 0, 0, 0.2),
-          rgb(255, 0, 0, 0.6),
-          red
+          rgb(255, 0, 0, 1),
+          rgb(255, 0, 0, 0.8),
+          rgb(255, 0, 0, 0.4)
         );
         border-radius: 10px;
       }
@@ -122,6 +132,9 @@
       }
 
       @media (max-width: 480px) {
+        .container p {
+          font-size: 0.8rem;
+        }
         .myChart {
           height: 350px;
         }
@@ -132,15 +145,8 @@
   <body>
     <div class="container">
       <h1>Mock It Yourself</h1>
-      <p>
-        Calculate and track your JEE mock scores.
-        <br />
-        If you wish to use this tool locally, feel free to fork the following
-        GitHub
-        <br />
-        <a href="https://github.com/krishiv1545/Mock-It-Yourself"
-          >GitHub repository</a
-        >
+      <p>Calculate and track your JEE mock scores.</p>
+      <p>If you wish to use this tool locally, feel free to fork the following <a href="https://github.com/krishiv1545/Mock-It-Yourself"> GitHub repository </a>
       </p>
       <table id="score-table">
         <thead>
@@ -320,6 +326,7 @@
         },
       };
 
+      // Create the chart
       const myChart = new Chart(document.getElementById("myChart"), config);
 
       // Optional: Re-render chart on window resize (if needed)
