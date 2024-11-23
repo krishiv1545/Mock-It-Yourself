@@ -6,6 +6,9 @@
     <title>Mock It Yourself</title>
     <link rel="stylesheet" href="style.css" />
     <style>
+      * {
+        -webkit-tap-highlight-color: transparent;
+      }
       body {
         font-family: Arial, sans-serif;
         background-color: #f9f9f9;
@@ -36,6 +39,10 @@
         color: #007bff;
       }
       h2 {
+        text-align: center;
+        color: #007bff;
+      }
+      a {
         color: #007bff;
       }
       input[type="number"],
@@ -135,12 +142,10 @@
       .toggle {
         display: flex;
         align-items: center;
-        justify-content: end;
-        margin: 10px;
+        justify-content: center;
       }
 
       .switch {
-        top: 10px;
         position: relative;
         display: inline-block;
         width: 60px;
@@ -161,7 +166,7 @@
         right: 0;
         bottom: 0;
         background-color: #ccc;
-        transition: 0.4s;
+        transition: 0.3s;
         border-radius: 34px;
       }
 
@@ -197,7 +202,7 @@
         color: #f9f9f9;
       }
       .container.dark-mode .myChart {
-        background-color: #f9f9f9f9;
+        background-color: transparent;
       }
       button.dark-mode {
         background-color: #555;
@@ -210,10 +215,40 @@
         background-color: #555;
         color: #fff;
       }
+      input[type="number"].dark-mode {
+        border: 1px solid black;
+        border-radius: 5px;
+        background-color: #333;
+        color: #fff;
+      }
+      input[type="date"].dark-mode {
+        border: 1px solid black;
+        border-radius: 5px;
+        background-color: #333;
+        color: #fff;
+      }
+      input[type="password"].dark-mode {
+        border: 1px solid black;
+        border-radius: 5px;
+        background-color: #333;
+        color: #fff;
+      }
+      select.dark-mode {
+        border: 1px solid black;
+        border-radius: 5px;
+        background-color: #333;
+        color: #fff;
+      }
 
       @media (max-width: 480px) {
-        .container p {
+        tbody {
           font-size: 0.8rem;
+        }
+        .container p {
+          font-size: 0.7rem;
+        }
+        h1 {
+          font-size: 1.8rem;
         }
         .myChart {
           height: 350px;
@@ -223,14 +258,14 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
-    <div class="toggle">
-      <!-- <label for="dark-mode-toggle">Dark Mode:</label> -->
-      <label class="switch">
-        <input type="checkbox" id="dark-mode-toggle" />
-        <span class="slider"></span>
-      </label>
-    </div>
     <div class="container">
+      <div class="toggle">
+        <!-- <label for="dark-mode-toggle">Dark Mode:</label> -->
+        <label class="switch">
+          <input type="checkbox" id="dark-mode-toggle" />
+          <span class="slider"></span>
+        </label>
+      </div>
       <h1>Mock It Yourself</h1>
       <p>Calculate and track your JEE mock scores.</p>
       <p>
@@ -392,33 +427,85 @@
           },
         ],
       };
-      const config = {
-        type: "line",
-        data: combined_data,
-        options: {
+      function getChartOptions(isDarkMode) {
+        return {
           responsive: true,
-          maintainAspectRatio: false, // This allows the chart to resize with its container
+          maintainAspectRatio: false,
           plugins: {
-            legend: { display: true },
-            title: { display: true, text: "Scores Over Time" },
+            legend: {
+              display: true,
+              labels: { color: isDarkMode ? "white" : "black" },
+            },
+            title: {
+              display: true,
+              text: "Scores Over Time",
+              color: isDarkMode ? "white" : "black",
+            },
           },
           scales: {
             x: {
               type: "category",
-              title: { display: true, text: "Dates" },
+              title: {
+                display: true,
+                text: "Dates",
+                color: isDarkMode ? "white" : "black",
+              },
+              grid: {
+                color: isDarkMode
+                  ? "rgba(255, 255, 255, 0.5)"
+                  : "rgba(0, 0, 0, 0.5)",
+              },
+              ticks: {
+                color: isDarkMode ? "white" : "black",
+              },
             },
             y: {
               beginAtZero: true,
               min: 0,
               max: 300,
-              title: { display: true, text: "Scores" },
+              title: {
+                display: true,
+                text: "Scores",
+                color: isDarkMode ? "white" : "black",
+              },
+              grid: {
+                color: isDarkMode
+                  ? "rgba(255, 255, 255, 0.5)"
+                  : "rgba(0, 0, 0, 0.5)",
+              },
+              ticks: {
+                color: isDarkMode ? "white" : "black",
+              },
             },
           },
-        },
+        };
+      }
+
+      // Get the dark mode state
+      const isDarkMode = localStorage.getItem("darkMode") === "true";
+
+      // Create the chart with the appropriate options
+      const config = {
+        type: "line",
+        data: combined_data,
+        options: getChartOptions(isDarkMode),
       };
 
       // Create the chart
       const myChart = new Chart(document.getElementById("myChart"), config);
+
+      // Update the chart when the dark mode toggle changes
+      document
+        .getElementById("dark-mode-toggle")
+        .addEventListener("change", (event) => {
+          const darkModeEnabled = event.target.checked;
+
+          // Update the chart options based on the dark mode state
+          myChart.options = getChartOptions(darkModeEnabled);
+
+          // Re-render the chart
+          myChart.update();
+        });
 
       // Optional: Re-render chart on window resize (if needed)
       window.addEventListener("resize", () => {
@@ -643,6 +730,13 @@
           document.body.classList.add("dark-mode");
           document.querySelector(".container").classList.add("dark-mode");
           darkModeToggle.checked = true; // Ensure the toggle switch is checked
+
+          // Apply dark mode to inputs and selects
+          document
+            .querySelectorAll(
+              'input[type="number"], input[type="date"], input[type="password"], select'
+            )
+            .forEach((el) => el.classList.add("dark-mode"));
         }
 
         // Add event listener for the toggle switch
@@ -650,10 +744,22 @@
           if (darkModeToggle.checked) {
             document.body.classList.add("dark-mode");
             document.querySelector(".container").classList.add("dark-mode");
+            // Add dark-mode class to inputs and selects
+            document
+              .querySelectorAll(
+                'input[type="number"], input[type="date"], input[type="password"], select'
+              )
+              .forEach((el) => el.classList.add("dark-mode"));
             localStorage.setItem("darkMode", "true");
           } else {
             document.body.classList.remove("dark-mode");
             document.querySelector(".container").classList.remove("dark-mode");
+            // Remove dark-mode class from inputs and selects
+            document
+              .querySelectorAll(
+                'input[type="number"], input[type="date"], input[type="password"], select'
+              )
+              .forEach((el) => el.classList.remove("dark-mode"));
             localStorage.setItem("darkMode", "false");
           }
         });
