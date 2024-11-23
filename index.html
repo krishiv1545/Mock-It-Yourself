@@ -6,9 +6,6 @@
     <title>Mock It Yourself</title>
     <link rel="stylesheet" href="style.css" />
     <style>
-      * {
-        -webkit-tap-highlight-color: transparent;
-      }
       body {
         font-family: Arial, sans-serif;
         background-color: #f9f9f9;
@@ -132,17 +129,18 @@
       .myChart {
         width: 100%;
         height: 400px; /* Default height */
-        border: 1px solid black;
       }
 
       /* Toggle Switch Styles */
       .toggle {
         display: flex;
         align-items: center;
-        justify-content: center;
+        justify-content: end;
+        margin: 10px;
       }
 
       .switch {
+        top: 10px;
         position: relative;
         display: inline-block;
         width: 60px;
@@ -163,7 +161,7 @@
         right: 0;
         bottom: 0;
         background-color: #ccc;
-        transition: 0.3s;
+        transition: 0.4s;
         border-radius: 34px;
       }
 
@@ -225,14 +223,14 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
+    <div class="toggle">
+      <!-- <label for="dark-mode-toggle">Dark Mode:</label> -->
+      <label class="switch">
+        <input type="checkbox" id="dark-mode-toggle" />
+        <span class="slider"></span>
+      </label>
+    </div>
     <div class="container">
-      <div class="toggle">
-        <!-- <label for="dark-mode-toggle">Dark Mode:</label> -->
-        <label class="switch">
-          <input type="checkbox" id="dark-mode-toggle" />
-          <span class="slider"></span>
-        </label>
-      </div>
       <h1>Mock It Yourself</h1>
       <p>Calculate and track your JEE mock scores.</p>
       <p>
