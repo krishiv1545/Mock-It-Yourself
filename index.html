@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mock It Yourself</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <style>
+      * {
+        -webkit-tap-highlight-color: transparent;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        color: #333;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        width: 80%;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      .container p {
+        color: #333;
+        font-size: 1rem;
+        display: flex;
+        justify-content: center;
+      }
+      .container a {
+        text-decoration: none;
+        margin-left: 4px;
+      }
+      h1 {
+        text-align: center;
+        color: #007bff;
+      }
+      h2 {
+        text-align: center;
+        color: #007bff;
+      }
+      a {
+        color: #007bff;
+      }
+      input[type="number"],
+      input[type="date"],
+      input[type="password"],
+      select {
+        padding: 10px;
+        margin: 10px 0;
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      button {
+        padding: 10px 20px;
+        margin: 5px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      #score-table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+      }
+      #score-table th,
+      #score-table td {
+        padding: 10px;
+        text-align: left;
+        border: 1px solid #ddd;
+      }
+      #score-table th {
+        background-color: #007bff;
+        color: white;
+      }
+      #score-box {
+        font-size: 24px;
+        text-align: center;
+      }
+      #marks-box {
+        margin-top: 20px;
+        text-align: center;
+      }
+      .dynamic-div-container {
+        position: relative;
+        width: 100%;
+      }
+      .dynamic-div {
+        position: absolute;
+        width: 100%;
+        height: 15px;
+        background-image: linear-gradient(
+          to right,
+          rgb(255, 0, 0, 1),
+          rgb(255, 0, 0, 0.8),
+          rgb(255, 0, 0, 0.4)
+        );
+        border-radius: 10px;
+      }
+      .dynamic-div-overlay {
+        position: absolute;
+        height: 15px;
+        width: 100%;
+        background-image: rgba(0, 0, 0, 0);
+        border: 2px solid black;
+        border-radius: 10px;
+        z-index: 1;
+        top: -2px;
+        left: -2px;
+      }
+      #set-timer {
+        margin-top: 34px;
+      }
+      #timer-display {
+        font-size: 24px;
+        text-align: center;
+        padding-bottom: 10px;
+      }
+      .chart-container {
+        width: 100%;
+        display: block;
+        justify-content: center;
+      }
+
+      .myChart {
+        width: 100%;
+        height: 400px; /* Default height */
+      }
+
+      /* Toggle Switch Styles */
+      .toggle {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+      }
+
+      .switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 50px;
+      }
+
+      .slider:before {
+        background-color: transparent;
+      }
+
+      .icon img {
+        height: 45px;
+        width: 45px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        transition: opacity 0.4s;
+      }
+
+      .sun {
+        opacity: 1;
+      }
+
+      .moon {
+        opacity: 0;
+      }
+
+      input:checked + .slider .sun {
+        opacity: 0; /* Hide sun icon when checked */
+      }
+
+      input:checked + .slider .moon {
+        opacity: 1; /* Show moon icon when checked */
+      }
+
+      body.dark-mode {
+        background-color: #333;
+        color: #f9f9f9;
+      }
+      .container.dark-mode {
+        background-color: #444;
+        color: #f9f9f9;
+      }
+      .container.dark-mode p {
+        color: #f9f9f9;
+      }
+      .container.dark-mode .myChart {
+        background-color: transparent;
+      }
+      button.dark-mode {
+        background-color: #555;
+        color: #fff;
+      }
+      button.dark-mode:hover {
+        background-color: #666;
+      }
+      #score-table.dark-mode th {
+        background-color: #555;
+        color: #fff;
+      }
+      input[type="number"].dark-mode {
+        border: 1px solid black;
+        border-radius: 5px;
+        background-color: #333;
+        color: #fff;
+      }
+      input[type="date"].dark-mode {
+        border: 1px solid black;
+        border-radius: 5px;
+        background-color: #333;
+        color: #fff;
+      }
+      input[type="password"].dark-mode {
+        border: 1px solid black;
+        border-radius: 5px;
+        background-color: #333;
+        color: #fff;
+      }
+      select.dark-mode {
+        border: 1px solid black;
+        border-radius: 5px;
+        background-color: #333;
+        color: #fff;
+      }
+
+      @media (max-width: 480px) {
+        tbody {
+          font-size: 0.8rem;
+        }
+        .container p {
+          font-size: 0.7rem;
+        }
+        h1 {
+          font-size: 1.8rem;
+        }
+        .myChart {
+          height: 350px;
+        }
+      }
+      .shoutout {
+        color: black;
+        background-color: #88888800;
+        display: flex;
+        align-items: center;
+        border: 2px solid #000;
+        border-radius: 500px;
+        padding: 6px 10px;
+      }
+      .shoutout:hover {
+        color: #007bff;
+        border: 2px solid #007bff;
+        background-color: #00000000;
+      }
+      #json-content {
+        display: flex;
+        background-color: #007bff20;
+        padding: 20px;
+        border: 3px solid black;
+        border-radius: 40px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      #json-content img {
+        position: relative;
+        width: 50%;
+        margin: 16px;
+      }
+      #json-content p {
+        padding: 0px;
+        margin-top: 16px;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="toggle">
+        <label class="switch">
+          <input type="checkbox" id="dark-mode-toggle" style="display: none" />
+          <span class="slider">
+            <span class="icon sun"
+              ><img
+                src="https://cdn3.iconfinder.com/data/icons/meteocons/512/sun-symbol-1024.png"
+                alt="sun"
+            /></span>
+            <span class="icon moon"
+              ><img
+                src="https://cdn3.iconfinder.com/data/icons/feather-5/24/moon-1024.png"
+                alt="moon"
+            /></span>
+          </span>
+        </label>
+      </div>
+      <h1>Mock It Yourself</h1>
+      <p>Calculate and track your JEE mock scores.</p>
+      <p>
+        If you wish to use this tool locally, feel free to fork the following
+        <a href="https://github.com/krishiv1545/Mock-It-Yourself">
+          GitHub repository</a
+        >
+      </p>
+      <p>
+        Project Managers:
+        <a href="https://github.com/krishiv1545"
+          ><button class="shoutout">
+            <i style="font-size: 24px" class="fa">&#xf09b;</i
+            >&nbsp;&nbsp;Episteme-sys
+          </button></a
+        >
+        <a href="https://github.com/parthdabhi1703"
+          ><button class="shoutout">
+            <i style="font-size: 24px" class="fa">&#xf09b;</i
+            >&nbsp;&nbsp;parthdabhi1703
+          </button></a
+        >
+      </p>
+      <table id="score-table">
+        <thead>
+          <tr>
+            <th>Score</th>
+            <th>Date</th>
+            <th>Subject</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div class="chart-container"">
+      <h2>Your Academic Trend</h2>
+      <div
+        class="myChart"
+        style="
+          overflow-y: auto;
+          width: 100%;
+          display: flex;
+          justify-content: center;
+        "
+      >
+        <canvas id="myChart"></canvas>
+      </div>
+    </div>
+    <div id="score-entry">
+      <h2>Enter New Score</h2>
+      <label for="score-input">Score:</label>
+      <input type="number" id="score-input" placeholder="Enter score" />
+      <label for="date-input">Date:</label>
+      <input type="date" id="date-input" placeholder="dd-mm-yyyy" />
+      <!-- <label for="password-input">Password:</label>
+        <input
+          type="password"
+          id="password-input"
+          placeholder="Enter password"
+        /> -->
+      <label for="subject-input">Subject:</label>
+      <select name="subject-input" id="subject-input">
+        <option value="Maths">Mathematics</option>
+        <option value="Physics">Physics</option>
+        <option value="Chemistry">Chemistry</option></select
+      ><br />
+      <button id="push-button">Push</button>
+    </div>
+    <button id="download-pdf">Download Table as PDF</button>
+    <div>
+      <div id="score-box">
+        <span id="score-display">0</span>
+      </div>
+      <button id="add-button">+4</button>
+      <button id="subtract-button">-1</button>
+      <button id="did-not-attempt-button">Did Not Attempt</button>
+      <button id="reset-button">Reset</button>
+    </div>
+    <p id="questions-attempted">Total questions attempted: 0</p>
+    <div id="marks-box">
+      <span id="marks-display">0 / 300</span>
+      <button id="calculate-button">Calculate</button>
+    </div>
+    <div class="clock">
+      <div id="timer">
+        <h2>Timer</h2>
+        <div id="timer-display">00:00</div>
+        <div class="dynamic-div-container">
+          <div id="dynamic-div" class="dynamic-div"></div>
+          <div class="dynamic-div-overlay" id="dynamic-div-overlay"></div>
+        </div>
+        <input type="number" id="set-timer" placeholder="Enter minutes" />
+        <button id="start-timer">Start Timer</button>
+        <button id="pause-timer">Pause Timer</button>
+        <button id="reset-timer">Reset Timer</button>
+      </div>
+      <!-- <div id="stopwatch">
+          <h2>Stopwatch</h2>
+          <div id="stopwatch-display">00:00</div>
+          <button id="start-stopwatch">Start Stopwatch</button>
+          <button id="pause-stopwatch">Pause Stopwatch</button>
+          <button id="reset-stopwatch">Reset Stopwatch</button>
+        </div>
+      </div> -->
+    </div>
+    <h2>Daily Updates</h2>
+    <div id="json-content"></div>
+    <script>
+      fetch("data.json")
+        .then((response) => response.json())
+        .then((data) => {
+          const contentDiv = document.getElementById("json-content");
+          contentDiv.innerHTML = `<p><u><b>${data.date}</b></u></p><p>${data.description}</p><img src="${data.path}">`;
+        })
+        .catch((error) => console.error("Error loading JSON data:", error));
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      function getScoresAndDates() {
+        const storedData = JSON.parse(localStorage.getItem("scoreData")) || [];
+        const math_scores = storedData
+          .filter((item) => item.subject === "Maths")
+          .map((item) => item.score);
+        const math_dates = storedData
+          .filter((item) => item.subject === "Maths")
+          .map((item) => formatDate(item.date)); // <--- Update here
+        const phy_scores = storedData
+          .filter((item) => item.subject === "Physics")
+          .map((item) => item.score);
+        const phy_dates = storedData
+          .filter((item) => item.subject === "Physics")
+          .map((item) => formatDate(item.date)); // <--- Update here
+        const chem_scores = storedData
+          .filter((item) => item.subject === "Chemistry")
+          .map((item) => item.score);
+        const chem_dates = storedData
+          .filter((item) => item.subject === "Chemistry")
+          .map((item) => formatDate(item.date)); // <--- Update here
+        return {
+          math_scores,
+          math_dates,
+          phy_scores,
+          phy_dates,
+          chem_scores,
+          chem_dates,
+        };
+      }
+
+      // Add a new function to format dates
+      function formatDate(dateString) {
+        const dateParts = dateString.split("-");
+        return `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+      }
+      const {
+        math_scores,
+        math_dates,
+        phy_scores,
+        phy_dates,
+        chem_scores,
+        chem_dates,
+      } = getScoresAndDates();
+
+      const combined_data = {
+        labels: [...math_dates, ...phy_dates, ...chem_dates],
+        datasets: [
+          {
+            label: "Math Scores",
+            data: math_scores,
+            borderColor: "rgb(255, 0, 0)",
+            fill: false,
+            spanGaps: true,
+          },
+          {
+            label: "Physics Scores",
+            data: phy_scores,
+            borderColor: "rgb(0, 255, 0)",
+            fill: false,
+            spanGaps: true,
+          },
+          {
+            label: "Chemistry Scores",
+            data: chem_scores,
+            borderColor: "rgb(0, 0, 255)",
+            fill: false,
+            spanGaps: true,
+          },
+        ],
+      };
+      function getChartOptions(isDarkMode) {
+        return {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: true,
+              labels: { color: isDarkMode ? "white" : "black" },
+            },
+            title: {
+              display: true,
+              text: "Scores Over Time",
+              color: isDarkMode ? "white" : "black",
+            },
+          },
+          scales: {
+            x: {
+              type: "category",
+              title: {
+                display: true,
+                text: "Dates",
+                color: isDarkMode ? "white" : "black",
+              },
+              grid: {
+                color: isDarkMode
+                  ? "rgba(255, 255, 255, 0.5)"
+                  : "rgba(0, 0, 0, 0.5)",
+              },
+              ticks: {
+                color: isDarkMode ? "white" : "black",
+              },
+            },
+            y: {
+              beginAtZero: true,
+              min: 0,
+              max: 300,
+              title: {
+                display: true,
+                text: "Scores",
+                color: isDarkMode ? "white" : "black",
+              },
+              grid: {
+                color: isDarkMode
+                  ? "rgba(255, 255, 255, 0.5)"
+                  : "rgba(0, 0, 0, 0.5)",
+              },
+              ticks: {
+                color: isDarkMode ? "white" : "black",
+              },
+            },
+          },
+        };
+      }
+
+      // Get the dark mode state
+      const isDarkMode = localStorage.getItem("darkMode") === "true";
+
+      // Create the chart with the appropriate options
+      const config = {
+        type: "line",
+        data: combined_data,
+        options: getChartOptions(isDarkMode),
+      };
+
+      // Create the chart
+      const myChart = new Chart(document.getElementById("myChart"), config);
+
+      // Update the chart when the dark mode toggle changes
+      document
+        .getElementById("dark-mode-toggle")
+        .addEventListener("change", (event) => {
+          const darkModeEnabled = event.target.checked;
+
+          // Update the chart options based on the dark mode state
+          myChart.options = getChartOptions(darkModeEnabled);
+
+          // Re-render the chart
+          myChart.update();
+        });
+
+      // Optional: Re-render chart on window resize (if needed)
+      window.addEventListener("resize", () => {
+        myChart.resize();
+      });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script>
+      function loadTableData() {
+        const storedData = JSON.parse(localStorage.getItem("scoreData")) || [];
+        const tableBody = document
+          .getElementById("score-table")
+          .getElementsByTagName("tbody")[0];
+
+        tableBody.innerHTML = "";
+
+        storedData.forEach((entry) => {
+          const newRow = tableBody.insertRow();
+          newRow.insertCell(0).textContent = entry.score;
+          newRow.insertCell(1).textContent = entry.date; // <--- Update here // what the fuck am I supposed to update here Dabhi?
+          newRow.insertCell(2).textContent = entry.subject;
+        });
+      }
+      function saveToLocalStorage(score, date, subject) {
+        const storedData = JSON.parse(localStorage.getItem("scoreData")) || [];
+        storedData.push({ score, date, subject });
+        localStorage.setItem("scoreData", JSON.stringify(storedData));
+      }
+      document.addEventListener("DOMContentLoaded", () => {
+        const dateInput = document.getElementById("date-input");
+        const today = new Date();
+        const day = String(today.getDate()).padStart(2, "0");
+        const month = String(today.getMonth() + 1).padStart(2, "0");
+        const year = today.getFullYear();
+        dateInput.value = `${year}-${month}-${day}`;
+        loadTableData();
+        updateScoreDisplay();
+      });
+      document.getElementById("push-button").addEventListener("click", () => {
+        const score = document.getElementById("score-input").value;
+        const date = document.getElementById("date-input").value;
+        const subject = document.getElementById("subject-input").value;
+
+        // Format date before saving to local storage
+        const formattedDate = formatDate(date);
+
+        /* const password = document.getElementById("password-input").value;
+        if (password !== passkey) {
+          alert("Incorrect password. Access denied.");
+          return;
+        } */
+        if (score === "") {
+          alert("Please enter a valid score.");
+          return;
+        }
+        const tableBody = document
+          .getElementById("score-table")
+          .getElementsByTagName("tbody")[0];
+        const newRow = tableBody.insertRow();
+        newRow.insertCell(0).textContent = score;
+        newRow.insertCell(1).textContent = formatDate(date);
+        newRow.insertCell(2).textContent = subject;
+        saveToLocalStorage(score, formattedDate, subject);
+        document.getElementById("score-input").value = "";
+        /* document.getElementById("password-input").value = ""; */
+      });
+      document.getElementById("download-pdf").addEventListener("click", () => {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF();
+        pdf.text("Score Table", 10, 10);
+        pdf.text("Score", 10, 20);
+        pdf.text("Date", 60, 20);
+        /* missing here */
+        const storedData = JSON.parse(localStorage.getItem("scoreData")) || [];
+        storedData.forEach((entry, index) => {
+          const yPosition = 30 + index * 10;
+          pdf.text(entry.score.toString(), 10, yPosition);
+          pdf.text(entry.date, 60, yPosition);
+          pdf.text(entry.subject, 110, yPosition);
+        });
+        pdf.save("score-table.pdf");
+      });
+      const scoreDisplay = document.getElementById("score-display");
+      const questionsAttemptedDisplay = document.getElementById(
+        "questions-attempted"
+      );
+      const marksDisplay = document.getElementById("marks-display");
+      let currentScore = parseInt(localStorage.getItem("currentScore")) || 0;
+      let clickCounter = parseInt(localStorage.getItem("clickCounter")) || 0;
+      function updateScoreDisplay() {
+        scoreDisplay.textContent = currentScore;
+        localStorage.setItem("currentScore", currentScore);
+      }
+      function updateClickCounter() {
+        questionsAttemptedDisplay.textContent = `Total questions attempted: ${clickCounter}`;
+        localStorage.setItem("clickCounter", clickCounter);
+      }
+      document.getElementById("add-button").addEventListener("click", () => {
+        currentScore += 4;
+        clickCounter++;
+        updateScoreDisplay();
+        updateClickCounter();
+      });
+      document
+        .getElementById("subtract-button")
+        .addEventListener("click", () => {
+          currentScore -= 1;
+          clickCounter++;
+          updateScoreDisplay();
+          updateClickCounter();
+        });
+      document
+        .getElementById("did-not-attempt-button")
+        .addEventListener("click", () => {
+          clickCounter++;
+          updateClickCounter();
+        });
+      document.getElementById("reset-button").addEventListener("click", () => {
+        currentScore = 0;
+        clickCounter = 0;
+        updateScoreDisplay();
+        updateClickCounter();
+        marksDisplay.textContent = "0 / 300";
+      });
+      document
+        .getElementById("calculate-button")
+        .addEventListener("click", () => {
+          if (clickCounter > 0) {
+            const calculatedMarks = (300 * currentScore) / (clickCounter * 4);
+            marksDisplay.textContent = `${calculatedMarks.toFixed(2)} / 300`;
+          } else {
+            marksDisplay.textContent = "0 / 300";
+          }
+        });
+      updateScoreDisplay();
+      updateClickCounter();
+      marksDisplay.textContent = "0 / 300";
+      console.log(storedData);
+    </script>
+    <script>
+      let timerInterval;
+      let remainingTime = 0;
+      let isPaused = false;
+      let totalTime = 0;
+      const timerDisplay = document.getElementById("timer-display");
+      const setTimerInput = document.getElementById("set-timer");
+      const startButton = document.getElementById("start-timer");
+      const pauseButton = document.getElementById("pause-timer");
+      const resetButton = document.getElementById("reset-timer");
+      const dynamicDiv = document.getElementById("dynamic-div");
+      function updateTimerDisplay() {
+        const minutes = Math.floor(remainingTime / 60);
+        const seconds = remainingTime % 60;
+        timerDisplay.textContent = `${String(minutes).padStart(
+          2,
+          "0"
+        )}:${String(seconds).padStart(2, "0")}`;
+      }
+      function updateDivWidth() {
+        const widthPercentage = (remainingTime / totalTime) * 100;
+        dynamicDiv.style.width = `${widthPercentage}%`;
+      }
+      startButton.addEventListener("click", () => {
+        if (!isPaused) {
+          const enteredMinutes = parseInt(setTimerInput.value) || 0;
+          remainingTime = enteredMinutes * 60;
+          totalTime = remainingTime;
+          updateTimerDisplay();
+        }
+        isPaused = false;
+        clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+          if (remainingTime > 0) {
+            remainingTime--;
+            updateDivWidth();
+            updateTimerDisplay();
+          } else {
+            clearInterval(timerInterval);
+            alert("Time's up!");
+          }
+        }, 1000);
+      });
+      pauseButton.addEventListener("click", () => {
+        if (isPaused) {
+          isPaused = false;
+          pauseButton.textContent = "Pause Timer";
+          timerInterval = setInterval(() => {
+            if (remainingTime > 0) {
+              remainingTime--;
+              updateDivWidth();
+              updateTimerDisplay();
+            } else {
+              clearInterval(timerInterval);
+              alert("Time's up!");
+            }
+          }, 1000);
+        } else {
+          isPaused = true;
+          clearInterval(timerInterval);
+          pauseButton.textContent = "Continue Timer";
+        }
+      });
+      resetButton.addEventListener("click", () => {
+        clearInterval(timerInterval);
+        remainingTime = 0;
+        totalTime = 0;
+        isPaused = false;
+        pauseButton.textContent = "Pause Timer";
+        dynamicDiv.style.width = "100%";
+        updateTimerDisplay();
+        setTimerInput.value = "";
+      });
+      updateTimerDisplay();
+      updateDivWidth();
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const darkModeToggle = document.getElementById("dark-mode-toggle");
+        const isDarkMode = localStorage.getItem("darkMode") === "true";
+
+        // Set the initial state of dark mode based on local storage
+        if (isDarkMode) {
+          document.body.classList.add("dark-mode");
+          document.querySelector(".container").classList.add("dark-mode");
+          darkModeToggle.checked = true; // Ensure the toggle switch is checked
+
+          // Apply dark mode to inputs and selects
+          document
+            .querySelectorAll(
+              'input[type="number"], input[type="date"], input[type="password"], select'
+            )
+            .forEach((el) => el.classList.add("dark-mode"));
+        }
+
+        // Add event listener for the toggle switch
+        darkModeToggle.addEventListener("change", () => {
+          if (darkModeToggle.checked) {
+            document.body.classList.add("dark-mode");
+            document.querySelector(".container").classList.add("dark-mode");
+            // Add dark-mode class to inputs and selects
+            document
+              .querySelectorAll(
+                'input[type="number"], input[type="date"], input[type="password"], select'
+              )
+              .forEach((el) => el.classList.add("dark-mode"));
+            localStorage.setItem("darkMode", "true");
+          } else {
+            document.body.classList.remove("dark-mode");
+            document.querySelector(".container").classList.remove("dark-mode");
+            // Remove dark-mode class from inputs and selects
+            document
+              .querySelectorAll(
+                'input[type="number"], input[type="date"], input[type="password"], select'
+              )
+              .forEach((el) => el.classList.remove("dark-mode"));
+            localStorage.setItem("darkMode", "false");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
